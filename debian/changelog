@@ -1,12 +1,21 @@
-libqofono (0.82-0ubuntu1) UNRELEASED; urgency=medium
+libqofono (0.82+15.10.20150911-0ubuntu1) wily; urgency=medium
 
+  [ Ken VanDine ]
   * New upstream release.
   * -debian/patches/expose_modem_tech.patch 
     - Dropped, upstream now provides availableTechnologies
   * debian/control
     - Bumped ofono depends to 1.16 for availableTechnologies
+  * added packaging added: .bzr-builddeb/ .bzr-builddeb/default.conf
+    debian/ debian/changelog debian/compat debian/control
+    debian/copyright debian/libqofono-dev.install debian/libqofono-qt5-
+    0.install debian/patches/ debian/patches/connman-resetcontexts.patch
+    debian/patches/context-preferred.patch
+    debian/patches/mtk_settings_binding.patch debian/patches/series
+    debian/qtdeclarative5-ofono0.2.install debian/rules debian/source/
+    debian/source/format
 
- -- Ken VanDine <ken.vandine@canonical.com>  Thu, 10 Sep 2015 16:07:38 -0400
+ -- Tony Espy <ci-train-bot@canonical.com>  Fri, 11 Sep 2015 12:50:11 +0000
 
 libqofono (0.79-0ubuntu2~gcc5.1) wily; urgency=medium
 
