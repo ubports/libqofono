@@ -1,0 +1,44 @@
+Source: libqofono
+Section: libs
+Priority: extra
+Maintainer: Ken VanDine <ken.vandine@ubuntu.com>
+Build-Depends: debhelper (>= 9),
+               pkg-config,
+               qt5-default,
+               qtbase5-dev,
+               qtdeclarative5-dev,
+               qtdeclarative5-qtquick2-plugin,
+               libqt5xmlpatterns5-dev,
+Standards-Version: 3.9.5
+Homepage: https://github.com/nemomobile/libqofono
+
+Package: libqofono-qt5-0
+Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
+Multi-Arch: same
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         ofono (>= 1.12.bzr6892+15.04.20150407),
+Description: Qt library for Ofono
+ A library for accessing the ofono daemon, and a declarative plugin for 
+ it. This allows accessing ofono in qtquick and friends.
+
+Package: libqofono-dev
+Section: libdevel
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+Description: Qt library for Ofono
+ A library for accessing the ofono daemon, and a declarative plugin for 
+ it. This allows accessing ofono in qtquick and friends.
+
+Package: qtdeclarative5-ofono0.2
+Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
+Multi-Arch: same
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+Breaks: ubuntu-system-settings (<< 0.3+15.04.20150114)
+Description: QML bindings for libqofono
+ A library for accessing the ofono daemon, and a declarative plugin for 
+ it. This allows accessing ofono in qtquick and friends.

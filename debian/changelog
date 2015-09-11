@@ -1,0 +1,77 @@
+libqofono (0.79-0ubuntu2~gcc5.1) wily; urgency=medium
+
+  * No-change test rebuild for g++5 ABI transition
+
+ -- Steve Langasek <steve.langasek@ubuntu.com>  Fri, 17 Jul 2015 22:20:07 +0000
+
+libqofono (0.79-0ubuntu1) wily; urgency=medium
+
+  * New upstream release.
+  * debian/patchescontext-preferred.patch
+    debian/patches/connman-resetcontexts.patch
+    debian/patches/mtk_settings_binding.patch
+    debian/patches/expose_modem_tech.patch: Updated
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 26 Jun 2015 10:16:02 -0400
+
+libqofono (0.70-0ubuntu4) wily; urgency=medium
+
+  [ Jonas Drange ]
+  * debian/patches/connman-resetcontexts.patch
+    - Added bindings to Ofono's reset context API (LP: #1338758)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 21 May 2015 16:16:51 -0400
+
+libqofono (0.70-0ubuntu3) vivid; urgency=medium
+
+  * debian/patches/context-preferred.patch
+    - Added bindings to the Ofono ConnectionContext's "Preferred" property,
+      patch thanks to Jonas Drange
+  * debian/control
+    - depend on ofono >= 1.12.bzr6892+15.04.20150407, required for the
+    preferred property
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 22 Apr 2015 10:58:17 -0400
+
+libqofono (0.70-0ubuntu2) vivid; urgency=medium
+
+  * debian/control
+    - fixed typo in breaks
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 14 Jan 2015 09:36:03 -0500
+
+libqofono (0.70-0ubuntu1) vivid; urgency=medium
+
+  * New upstream release.
+  * Dropped patches applied upstream, service_numbers.patch and 
+    fix_multiarch.patch
+  * Refreshed expose_modem_tech.patch and mtk_settings_binding.patch
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Mon, 12 Jan 2015 11:32:24 -0500
+
+libqofono (0.53-0ubuntu3) vivid; urgency=medium
+
+  * debian/patches/mtk_settings_binding.patch
+    - add mtk (mediatek) settings binding which allows consumer
+      to set which modem to allow 3G communication (LP: #1373388)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 21 Nov 2014 10:07:54 -0500
+
+libqofono (0.53-0ubuntu2) utopic; urgency=medium
+
+  * debian/patches/expose_modem_tech.patch
+    - radiosettings: expose modemtechnologies (LP: #1346790)
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 20 Aug 2014 11:17:52 -0400
+
+libqofono (0.53-0ubuntu1) utopic; urgency=low
+
+  [ Ken VanDine ]
+  * New package
+
+  [ Łukasz 'sil2100' Zemczak ]
+  * debian/patches/fix_multiarch.patch:
+    - Fix qmake files to enable proper multiarch support during package build.
+  * Prepare proper copyright information
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Wed, 18 Jun 2014 13:02:42 -0400

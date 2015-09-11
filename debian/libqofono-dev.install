@@ -1,0 +1,4 @@
+usr/include
+usr/share/qt5/mkspecs
+usr/lib/*/pkgconfig
+usr/lib/*/*ofono*.so
