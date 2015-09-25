@@ -1,3 +1,9 @@
+libqofono (0.82+15.10.20150925-0ubuntu1) wily; urgency=medium
+
+  * libqofono-dev should depend on libqofono-qt5-0 (= ${binary:Version}
+
+ -- Ken VanDine <ken.vandine@canonical.com>  Fri, 25 Sep 2015 13:57:19 +0000
+
 libqofono (0.82+15.10.20150911-0ubuntu1) wily; urgency=medium
 
   [ Ken VanDine ]
