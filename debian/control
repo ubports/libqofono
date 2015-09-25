@@ -28,6 +28,7 @@ Section: libdevel
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
+         libqofono-qt5-0 (= ${binary:Version}),
 Description: Qt library for Ofono
  A library for accessing the ofono daemon, and a declarative plugin for 
  it. This allows accessing ofono in qtquick and friends.
