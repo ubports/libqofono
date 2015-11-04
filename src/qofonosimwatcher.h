@@ -31,6 +31,8 @@ public:
     ~QOfonoSimWatcher();
 
     bool isValid() const;
+    bool requireSubscriberIdentity() const;
+    void setRequireSubscriberIdentity(bool require);
     int presentSimCount() const;
     QList<QOfonoSimManager::SharedPointer> presentSimList() const;
 

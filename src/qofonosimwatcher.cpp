@@ -26,9 +26,10 @@ public:
     QSharedPointer<QOfonoManager> ofono;
     QHash<QString, QOfonoSimManager::SharedPointer> allSims;
     QList<QOfonoSimManager::SharedPointer> presentSims;
+    bool requireSubscriberIdentity;
     bool valid;
 
-private Q_SLOTS:
+public Q_SLOTS:
     void onOfonoAvailableChanged();
     void updateValid();
     void updateModems();
@@ -38,6 +39,7 @@ private Q_SLOTS:
 QOfonoSimWatcher::Private::Private(QOfonoSimWatcher *parent) :
     watcher(parent),
     ofono(QOfonoManager::instance()),
+    requireSubscriberIdentity(false),
     valid(false)
 {
     connect(ofono.data(), SIGNAL(availableChanged(bool)), SLOT(onOfonoAvailableChanged()));
@@ -92,6 +94,7 @@ void QOfonoSimWatcher::Private::updateModems()
                 sim->fixModemPath(path);
                 connect(sim, SIGNAL(validChanged(bool)), SLOT(updateSims()));
                 connect(sim, SIGNAL(presenceChanged(bool)), SLOT(updateSims()));
+                connect(sim, SIGNAL(subscriberIdentityChanged(QString)), SLOT(updateSims()));
                 allSims.insert(path, QOfonoSimManager::SharedPointer(sim));
             }
         }
@@ -107,7 +110,8 @@ void QOfonoSimWatcher::Private::updateSims()
     int i, n = modems.count();
     for (i=0; i<n; i++) {
         QOfonoSimManager::SharedPointer sim = allSims.value(modems.at(i));
-        if (sim->isValid() && sim->present()) {
+        if (sim->isValid() && sim->present() &&
+           (!requireSubscriberIdentity || !sim->subscriberIdentity().isEmpty())) {
             sims.append(sim);
         }
     }
@@ -178,6 +182,19 @@ int QOfonoSimWatcher::presentSimCount() const
 QList<QOfonoSimManager::SharedPointer> QOfonoSimWatcher::presentSimList() const
 {
     return d_ptr->presentSims;
+}
+
+bool QOfonoSimWatcher::requireSubscriberIdentity() const
+{
+    return d_ptr->requireSubscriberIdentity;
+}
+
+void QOfonoSimWatcher::setRequireSubscriberIdentity(bool require)
+{
+    if (d_ptr->requireSubscriberIdentity != require) {
+        d_ptr->requireSubscriberIdentity = require;
+        d_ptr->updateSims();
+    }
 }
 
 #include "qofonosimwatcher.moc"
