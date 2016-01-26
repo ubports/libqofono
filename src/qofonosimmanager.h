@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2013-2014 Jolla Ltd.
+** Copyright (C) 2013-2016 Jolla Ltd.
 ** Contact: lorn.potter@jollamobile.com
 **
 ** GNU Lesser General Public License Usage
@@ -33,6 +33,7 @@ class QOFONOSHARED_EXPORT QOfonoSimManager : public QOfonoModemInterface
     Q_PROPERTY(QString subscriberIdentity READ subscriberIdentity NOTIFY subscriberIdentityChanged)
     Q_PROPERTY(QString mobileCountryCode READ mobileCountryCode NOTIFY mobileCountryCodeChanged)
     Q_PROPERTY(QString mobileNetworkCode READ mobileNetworkCode NOTIFY mobileNetworkCodeChanged)
+    Q_PROPERTY(QString serviceProviderName READ serviceProviderName NOTIFY serviceProviderNameChanged)
     Q_PROPERTY(QStringList subscriberNumbers READ subscriberNumbers WRITE setSubscriberNumbers NOTIFY subscriberNumbersChanged)
     Q_PROPERTY(QVariantMap serviceNumbers READ serviceNumbers NOTIFY serviceNumbersChanged)
     Q_PROPERTY(PinType pinRequired READ pinRequired NOTIFY pinRequiredChanged)
@@ -84,6 +85,7 @@ public:
     QString subscriberIdentity() const;
     QString mobileCountryCode() const;
     QString mobileNetworkCode() const;
+    QString serviceProviderName() const;
     QStringList subscriberNumbers() const;
     QVariantMap serviceNumbers() const; //
     PinType pinRequired() const;
@@ -100,6 +102,7 @@ Q_SIGNALS:
     void subscriberIdentityChanged(const QString &imsi);
     void mobileCountryCodeChanged(const QString &mcc);
     void mobileNetworkCodeChanged(const QString &mnc);
+    void serviceProviderNameChanged(const QString &spn);
     void subscriberNumbersChanged(const QStringList &msisdns);
     void serviceNumbersChanged(const QVariantMap &sdns);
     void pinRequiredChanged(int pinType);

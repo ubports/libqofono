@@ -31,6 +31,7 @@ public:
         SubscriberIdentityRole,
         MobileCountryCodeRole,
         MobileNetworkCodeRole,
+        ServiceProviderNameRole,
         SubscriberNumbersRole,
         ServiceNumbersRole,
         PinRequiredRole,
@@ -67,6 +68,7 @@ private Q_SLOTS:
     void onSubscriberIdentityChanged();
     void onMobileCountryCodeChanged();
     void onMobileNetworkCodeChanged();
+    void onServiceProviderNameChanged();
     void onSubscriberNumbersChanged();
     void onServiceNumbersChanged();
     void onPinRequiredChanged();
