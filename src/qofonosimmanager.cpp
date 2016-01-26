@@ -22,6 +22,7 @@ static const QString kPresent(QLatin1String("Present"));
 static const QString kSubscriberIdentity(QLatin1String("SubscriberIdentity"));
 static const QString kMobileCountryCode(QLatin1String("MobileCountryCode"));
 static const QString kMobileNetworkCode(QLatin1String("MobileNetworkCode"));
+static const QString kServiceProviderName(QLatin1String("ServiceProviderName"));
 static const QString kSubscriberNumbers(QLatin1String("SubscriberNumbers"));
 static const QString kServiceNumbers(QLatin1String("ServiceNumbers"));
 static const QString kPinRequired(QLatin1String("PinRequired"));
@@ -134,6 +135,8 @@ void QOfonoSimManager::propertyChanged(const QString &property, const QVariant &
         Q_EMIT mobileCountryCodeChanged(value.value<QString>());
     } else if (property == kMobileNetworkCode) {
         Q_EMIT mobileNetworkCodeChanged(value.value<QString>());
+    } else if (property == kServiceProviderName) {
+        Q_EMIT serviceProviderNameChanged(value.value<QString>());
     } else if (property == kSubscriberNumbers) {
         Q_EMIT subscriberNumbersChanged(value.value<QStringList>());
     } else if (property == kServiceNumbers) {
@@ -173,6 +176,11 @@ QString QOfonoSimManager::mobileCountryCode() const
 QString QOfonoSimManager::mobileNetworkCode() const
 {
     return getString(kMobileNetworkCode);
+}
+
+QString QOfonoSimManager::serviceProviderName() const
+{
+    return getString(kServiceProviderName);
 }
 
 QStringList QOfonoSimManager::subscriberNumbers() const

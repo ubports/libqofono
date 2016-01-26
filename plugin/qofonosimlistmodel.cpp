@@ -56,19 +56,20 @@ void QOfonoSimListModel::setRequireSubscriberIdentity(bool require)
 QHash<int,QByteArray> QOfonoSimListModel::roleNames() const
 {
     QHash<int, QByteArray> roles;
-    roles[PathRole]               = "path";
-    roles[SubscriberIdentityRole] = "subscriberIdentity";
-    roles[MobileCountryCodeRole]  = "mobileCountryCode";
-    roles[MobileNetworkCodeRole]  = "mobileNetworkCode";
-    roles[SubscriberNumbersRole]  = "subscriberNumbers";
-    roles[ServiceNumbersRole]     = "serviceNumbers";
-    roles[PinRequiredRole]        = "pinRequired";
-    roles[LockedPinsRole]         = "lockedPins";
-    roles[CardIdentifierRole]     = "cardIdentifier";
-    roles[PreferredLanguagesRole] = "preferredLanguages";
-    roles[PinRetriesRole]         = "pinRetries";
-    roles[FixedDialingRole]       = "fixedDialing";
-    roles[BarredDialingRole]      = "barredDialing";
+    roles[PathRole]                = "path";
+    roles[SubscriberIdentityRole]  = "subscriberIdentity";
+    roles[MobileCountryCodeRole]   = "mobileCountryCode";
+    roles[MobileNetworkCodeRole]   = "mobileNetworkCode";
+    roles[ServiceProviderNameRole] = "serviceProviderName";
+    roles[SubscriberNumbersRole]   = "subscriberNumbers";
+    roles[ServiceNumbersRole]      = "serviceNumbers";
+    roles[PinRequiredRole]         = "pinRequired";
+    roles[LockedPinsRole]          = "lockedPins";
+    roles[CardIdentifierRole]      = "cardIdentifier";
+    roles[PreferredLanguagesRole]  = "preferredLanguages";
+    roles[PinRetriesRole]          = "pinRetries";
+    roles[FixedDialingRole]        = "fixedDialing";
+    roles[BarredDialingRole]       = "barredDialing";
     return roles;
 }
 
@@ -83,19 +84,20 @@ QVariant QOfonoSimListModel::data(const QModelIndex& index, int role) const
     if (row >= 0 && row < simList.count()) {
         const QOfonoSimManager* sim = simList.at(row).data();
         switch (role) {
-        case PathRole:               return sim->modemPath();
-        case SubscriberIdentityRole: return sim->subscriberIdentity();
-        case MobileCountryCodeRole:  return sim->mobileCountryCode();
-        case MobileNetworkCodeRole:  return sim->mobileNetworkCode();
-        case SubscriberNumbersRole:  return sim->subscriberNumbers();
-        case ServiceNumbersRole:     return sim->serviceNumbers();
-        case PinRequiredRole:        return sim->pinRequired();
-        case LockedPinsRole:         return sim->lockedPins();
-        case CardIdentifierRole:     return sim->cardIdentifier();
-        case PreferredLanguagesRole: return sim->preferredLanguages();
-        case PinRetriesRole:         return sim->pinRetries();
-        case FixedDialingRole:       return sim->fixedDialing();
-        case BarredDialingRole:      return sim->barredDialing();
+        case PathRole:                return sim->modemPath();
+        case SubscriberIdentityRole:  return sim->subscriberIdentity();
+        case MobileCountryCodeRole:   return sim->mobileCountryCode();
+        case MobileNetworkCodeRole:   return sim->mobileNetworkCode();
+        case ServiceProviderNameRole: return sim->serviceProviderName();
+        case SubscriberNumbersRole:   return sim->subscriberNumbers();
+        case ServiceNumbersRole:      return sim->serviceNumbers();
+        case PinRequiredRole:         return sim->pinRequired();
+        case LockedPinsRole:          return sim->lockedPins();
+        case CardIdentifierRole:      return sim->cardIdentifier();
+        case PreferredLanguagesRole:  return sim->preferredLanguages();
+        case PinRetriesRole:          return sim->pinRetries();
+        case FixedDialingRole:        return sim->fixedDialing();
+        case BarredDialingRole:       return sim->barredDialing();
         }
     } else {
         qWarning() << index << role;
@@ -174,6 +176,9 @@ void QOfonoSimListModel::onPresentSimListChanged()
                 SIGNAL(mobileNetworkCodeChanged(QString)),
                 SLOT(onMobileNetworkCodeChanged()));
             connect(sim,
+                SIGNAL(serviceProviderNameChanged(QString)),
+                SLOT(onServiceProviderNameChanged()));
+            connect(sim,
                 SIGNAL(subscriberNumbersChanged(QStringList)),
                 SLOT(onSubscriberNumbersChanged()));
             connect(sim,
@@ -223,6 +228,11 @@ void QOfonoSimListModel::onMobileCountryCodeChanged()
 void QOfonoSimListModel::onMobileNetworkCodeChanged()
 {
     simPropertyChanged(MobileNetworkCodeRole);
+}
+
+void QOfonoSimListModel::onServiceProviderNameChanged()
+{
+    simPropertyChanged(ServiceProviderNameRole);
 }
 
 void QOfonoSimListModel::onSubscriberNumbersChanged()
