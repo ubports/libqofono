@@ -1,3 +1,9 @@
+libqofono (0.82+16.04.20160127-0ubuntu1) xenial; urgency=medium
+
+  * Make ofono dependency optional (LP: #1521142)
+
+ -- Pete Woods <ci-train-bot@canonical.com>  Wed, 27 Jan 2016 14:19:53 +0000
+
 libqofono (0.82+15.10.20150925-0ubuntu1) wily; urgency=medium
 
   * libqofono-dev should depend on libqofono-qt5-0 (= ${binary:Version}
