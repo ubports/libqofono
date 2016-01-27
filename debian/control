@@ -18,7 +18,7 @@ Pre-Depends: ${misc:Pre-Depends}
 Multi-Arch: same
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         ofono (>= 1.16),
+Recommends: ofono (>= 1.16),
 Description: Qt library for Ofono
  A library for accessing the ofono daemon, and a declarative plugin for 
  it. This allows accessing ofono in qtquick and friends.
