@@ -34,6 +34,7 @@ public:
     ~Private() { delete ext; }
 
     QDBusPendingCall setProperty(const QString &key, const QVariant &value);
+    void getProperties(QOfonoObject *obj);
 
     class SetPropertyWatcher : public QDBusPendingCallWatcher {
     public:
@@ -73,6 +74,13 @@ QDBusPendingCall QOfonoObject::Private::setProperty(const QString &key, const QV
     return interface->asyncCallWithArgumentList("SetProperty", args);
 }
 
+void QOfonoObject::Private::getProperties(QOfonoObject *obj)
+{
+    QObject::connect(new QDBusPendingCallWatcher(
+        interface->asyncCall("GetProperties"), interface),
+        SIGNAL(finished(QDBusPendingCallWatcher*)), obj,
+        SLOT(onGetPropertiesFinished(QDBusPendingCallWatcher*)));
+}
 
 QOfonoObject::QOfonoObject(QObject *parent) :
     QObject(parent),
@@ -166,10 +174,7 @@ void QOfonoObject::setDbusInterface(QDBusAbstractInterface *iface, const QVarian
             }
         } else {
             d_ptr->initialized = false;
-            connect(new QDBusPendingCallWatcher(
-                iface->asyncCall("GetProperties"), iface),
-                SIGNAL(finished(QDBusPendingCallWatcher*)),
-                SLOT(onGetPropertiesFinished(QDBusPendingCallWatcher*)));
+            d_ptr->getProperties(this);
         }
         connect(iface,
             SIGNAL(PropertyChanged(QString,QDBusVariant)),
@@ -209,8 +214,21 @@ void QOfonoObject::getPropertiesFinished(const QVariantMap &properties, const QD
         }
         d_ptr->initialized = true;
     } else {
-        qDebug() << *error;
-        Q_EMIT reportError(error->message());
+        switch (error->type()) {
+        case QDBusError::NoReply:
+        case QDBusError::Timeout:
+        case QDBusError::TimedOut:
+            // Retry GetProperties call if it times out
+            qDebug() << "Retrying"
+                     << qPrintable(d_ptr->interface->interface() + ".GetProperties")
+                     << d_ptr->interface->path();
+            d_ptr->getProperties(this);
+            break;
+        default:
+            qDebug() << *error;
+            Q_EMIT reportError(error->message());
+            break;
+        }
     }
 }
 
