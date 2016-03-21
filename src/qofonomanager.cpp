@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2013-2015 Jolla Ltd.
+** Copyright (C) 2013-2016 Jolla Ltd.
 ** Contact: lorn.potter@jollamobile.com
 **
 ** GNU Lesser General Public License Usage
@@ -14,6 +14,7 @@
 ****************************************************************************/
 
 #include "qofonomanager.h"
+#include "qofonoutils_p.h"
 #include "ofono_manager_interface.h"
 
 class QOfonoManager::Private
@@ -24,7 +25,19 @@ public:
     bool available;
 
     Private() : ofonoManager(NULL), available(false) {}
+
+    void getModems(QOfonoManager *manager);
 };
+
+void QOfonoManager::Private::getModems(QOfonoManager *manager)
+{
+    if (ofonoManager) {
+        connect(new QDBusPendingCallWatcher(
+            ofonoManager->GetModems(), ofonoManager),
+            SIGNAL(finished(QDBusPendingCallWatcher*)), manager,
+            SLOT(onGetModemsFinished(QDBusPendingCallWatcher*)));
+    }
+}
 
 QOfonoManager::QOfonoManager(QObject *parent) :
     QObject(parent),
@@ -107,7 +120,14 @@ void QOfonoManager::onGetModemsFinished(QDBusPendingCallWatcher* watcher)
 {
     QDBusPendingReply<ObjectPathPropertiesList> reply(*watcher);
     watcher->deleteLater();
-    if (reply.isValid() && !reply.isError()) {
+    if (reply.isError()) {
+        if (qofono::isTimeout(reply.error())) {
+            qDebug() << "Retrying GetModems...";
+            d_ptr->getModems(this);
+        } else {
+            qWarning() << reply.error();
+        }
+    } else {
         QString prevDefault = defaultModem();
         QStringList newModems;
         Q_FOREACH(ObjectPathProperties modem, reply.value()) {
@@ -133,15 +153,13 @@ void QOfonoManager::connectToOfono(const QString &)
         OfonoManager* mgr = new OfonoManager("org.ofono", "/", QDBusConnection::systemBus(), this);
         if (mgr->isValid()) {
             d_ptr->ofonoManager = mgr;
-            connect(new QDBusPendingCallWatcher(mgr->GetModems(), mgr),
-                SIGNAL(finished(QDBusPendingCallWatcher*)),
-                SLOT(onGetModemsFinished(QDBusPendingCallWatcher*)));
             connect(mgr,
                 SIGNAL(ModemAdded(QDBusObjectPath,QVariantMap)),
                 SLOT(onModemAdded(QDBusObjectPath,QVariantMap)));
             connect(mgr,
                 SIGNAL(ModemRemoved(QDBusObjectPath)),
                 SLOT(onModemRemoved(QDBusObjectPath)));
+            d_ptr->getModems(this);
         } else {
             delete mgr;
         }

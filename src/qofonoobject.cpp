@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014-2015 Jolla Ltd.
+** Copyright (C) 2014-2016 Jolla Ltd.
 ** Contact: slava.monich@jolla.com
 **
 ** GNU Lesser General Public License Usage
@@ -213,22 +213,15 @@ void QOfonoObject::getPropertiesFinished(const QVariantMap &properties, const QD
             updateProperty(it.key(), it.value());
         }
         d_ptr->initialized = true;
+    } else if (qofono::isTimeout(*error)) {
+        // Retry GetProperties call if it times out
+        qDebug() << "Retrying"
+                 << qPrintable(d_ptr->interface->interface() + ".GetProperties")
+                 << d_ptr->interface->path();
+        d_ptr->getProperties(this);
     } else {
-        switch (error->type()) {
-        case QDBusError::NoReply:
-        case QDBusError::Timeout:
-        case QDBusError::TimedOut:
-            // Retry GetProperties call if it times out
-            qDebug() << "Retrying"
-                     << qPrintable(d_ptr->interface->interface() + ".GetProperties")
-                     << d_ptr->interface->path();
-            d_ptr->getProperties(this);
-            break;
-        default:
-            qDebug() << *error;
-            Q_EMIT reportError(error->message());
-            break;
-        }
+        qWarning() << *error;
+        Q_EMIT reportError(error->message());
     }
 }
 
