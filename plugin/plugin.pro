@@ -19,11 +19,13 @@ equals(QT_MAJOR_VERSION, 5): {
 
 SOURCES =  \ 
     qofonodeclarativeplugin.cpp \
-    qofononetworkoperatorlistmodel.cpp
+    qofononetworkoperatorlistmodel.cpp \
+    qofonosimlistmodel.cpp
 
 HEADERS = \
     qofonodeclarativeplugin.h \
-    qofononetworkoperatorlistmodel.h
+    qofononetworkoperatorlistmodel.h \
+    qofonosimlistmodel.h
 
 INCLUDEPATH += ../src
 

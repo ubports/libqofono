@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Jolla Ltd.
+** Copyright (C) 2014-2016 Jolla Ltd.
 ** Contact: lorn.potter@jollamobile.com
 **
 ** GNU Lesser General Public License Usage
@@ -34,6 +34,18 @@ inline bool safeVariantEq(const QVariant &v1, const QVariant &v2)
     if (!v2.isValid() && v1 == QVariant(v1.type()))
         return true;
     return v1 == v2;
+}
+
+inline bool isTimeout(const QDBusError &error)
+{
+    switch (error.type()) {
+    case QDBusError::NoReply:
+    case QDBusError::Timeout:
+    case QDBusError::TimedOut:
+        return true;
+    default:
+        return false;
+    }
 }
 
 }

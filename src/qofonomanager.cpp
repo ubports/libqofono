@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2013-2015 Jolla Ltd.
+** Copyright (C) 2013-2016 Jolla Ltd.
 ** Contact: lorn.potter@jollamobile.com
 **
 ** GNU Lesser General Public License Usage
@@ -14,6 +14,7 @@
 ****************************************************************************/
 
 #include "qofonomanager.h"
+#include "qofonoutils_p.h"
 #include "ofono_manager_interface.h"
 
 class QOfonoManager::Private
@@ -24,7 +25,19 @@ public:
     bool available;
 
     Private() : ofonoManager(NULL), available(false) {}
+
+    void getModems(QOfonoManager *manager);
 };
+
+void QOfonoManager::Private::getModems(QOfonoManager *manager)
+{
+    if (ofonoManager) {
+        connect(new QDBusPendingCallWatcher(
+            ofonoManager->GetModems(), ofonoManager),
+            SIGNAL(finished(QDBusPendingCallWatcher*)), manager,
+            SLOT(onGetModemsFinished(QDBusPendingCallWatcher*)));
+    }
+}
 
 QOfonoManager::QOfonoManager(QObject *parent) :
     QObject(parent),
@@ -106,7 +119,15 @@ void QOfonoManager::onModemRemoved(const QDBusObjectPath& path)
 void QOfonoManager::onGetModemsFinished(QDBusPendingCallWatcher* watcher)
 {
     QDBusPendingReply<ObjectPathPropertiesList> reply(*watcher);
-    if (reply.isValid() && !reply.isError()) {
+    watcher->deleteLater();
+    if (reply.isError()) {
+        if (qofono::isTimeout(reply.error())) {
+            qDebug() << "Retrying GetModems...";
+            d_ptr->getModems(this);
+        } else {
+            qWarning() << reply.error();
+        }
+    } else {
         QString prevDefault = defaultModem();
         QStringList newModems;
         Q_FOREACH(ObjectPathProperties modem, reply.value()) {
@@ -124,7 +145,6 @@ void QOfonoManager::onGetModemsFinished(QDBusPendingCallWatcher* watcher)
         d_ptr->available = true;
         Q_EMIT availableChanged(true);
     }
-    watcher->deleteLater();
 }
 
 void QOfonoManager::connectToOfono(const QString &)
@@ -133,15 +153,13 @@ void QOfonoManager::connectToOfono(const QString &)
         OfonoManager* mgr = new OfonoManager("org.ofono", "/", QDBusConnection::systemBus(), this);
         if (mgr->isValid()) {
             d_ptr->ofonoManager = mgr;
-            connect(new QDBusPendingCallWatcher(mgr->GetModems(), mgr),
-                SIGNAL(finished(QDBusPendingCallWatcher*)),
-                SLOT(onGetModemsFinished(QDBusPendingCallWatcher*)));
             connect(mgr,
                 SIGNAL(ModemAdded(QDBusObjectPath,QVariantMap)),
                 SLOT(onModemAdded(QDBusObjectPath,QVariantMap)));
             connect(mgr,
                 SIGNAL(ModemRemoved(QDBusObjectPath)),
                 SLOT(onModemRemoved(QDBusObjectPath)));
+            d_ptr->getModems(this);
         } else {
             delete mgr;
         }
@@ -166,4 +184,15 @@ void QOfonoManager::ofonoUnregistered(const QString &)
             Q_EMIT defaultModemChanged(QString());
         }
     }
+}
+
+QSharedPointer<QOfonoManager> QOfonoManager::instance()
+{
+    static QWeakPointer<QOfonoManager> sharedInstance;
+    QSharedPointer<QOfonoManager> mgr = sharedInstance;
+    if (mgr.isNull()) {
+        mgr = QSharedPointer<QOfonoManager>::create();
+        sharedInstance = mgr;
+    }
+    return mgr;
 }
