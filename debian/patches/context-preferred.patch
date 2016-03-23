@@ -1,8 +1,8 @@
-Index: libqofono-0.79/src/qofonoconnectioncontext.cpp
+Index: libqofono-ubuntu/src/qofonoconnectioncontext.cpp
 ===================================================================
---- libqofono-0.79.orig/src/qofonoconnectioncontext.cpp
-+++ libqofono-0.79/src/qofonoconnectioncontext.cpp
-@@ -118,6 +118,8 @@ void QOfonoConnectionContext::propertyCh
+--- libqofono-ubuntu.orig/src/qofonoconnectioncontext.cpp
++++ libqofono-ubuntu/src/qofonoconnectioncontext.cpp
+@@ -117,6 +117,8 @@ void QOfonoConnectionContext::propertyCh
      SUPER::propertyChanged(property, value);
      if (property == QLatin1String("Active")) {
          Q_EMIT activeChanged(value.value<bool>());
@@ -11,7 +11,7 @@ Index: libqofono-0.79/src/qofonoconnectioncontext.cpp
      } else if (property == QLatin1String("Name")) {
          Q_EMIT nameChanged(value.value<QString>());
      } else if (property == QLatin1String("AccessPointName")) {
-@@ -148,6 +150,11 @@ bool QOfonoConnectionContext::active() c
+@@ -147,6 +149,11 @@ bool QOfonoConnectionContext::active() c
      return getBool("Active");
  }
  
@@ -23,7 +23,7 @@ Index: libqofono-0.79/src/qofonoconnectioncontext.cpp
  QString QOfonoConnectionContext::accessPointName() const
  {
      return getString("AccessPointName");
-@@ -212,6 +219,11 @@ void QOfonoConnectionContext::setActive(
+@@ -211,6 +218,11 @@ void QOfonoConnectionContext::setActive(
      setProperty("Active", value);
  }
  
@@ -35,10 +35,10 @@ Index: libqofono-0.79/src/qofonoconnectioncontext.cpp
  void QOfonoConnectionContext::setAccessPointName(const QString &value)
  {
      setProperty("AccessPointName", value);
-Index: libqofono-0.79/src/qofonoconnectioncontext.h
+Index: libqofono-ubuntu/src/qofonoconnectioncontext.h
 ===================================================================
---- libqofono-0.79.orig/src/qofonoconnectioncontext.h
-+++ libqofono-0.79/src/qofonoconnectioncontext.h
+--- libqofono-ubuntu.orig/src/qofonoconnectioncontext.h
++++ libqofono-ubuntu/src/qofonoconnectioncontext.h
 @@ -28,6 +28,7 @@ class QOFONOSHARED_EXPORT QOfonoConnecti
  {
      Q_OBJECT
@@ -65,10 +65,10 @@ Index: libqofono-0.79/src/qofonoconnectioncontext.h
      void provisioningChanged(bool provisioning);
      void accessPointNameChanged(const QString &apn);
      void nameChanged(const QString &name);
-Index: libqofono-0.79/test/auto/tests/tst_qofonoconnmancontext.cpp
+Index: libqofono-ubuntu/test/auto/tests/tst_qofonoconnmancontext.cpp
 ===================================================================
---- libqofono-0.79.orig/test/auto/tests/tst_qofonoconnmancontext.cpp
-+++ libqofono-0.79/test/auto/tests/tst_qofonoconnmancontext.cpp
+--- libqofono-ubuntu.orig/test/auto/tests/tst_qofonoconnmancontext.cpp
++++ libqofono-ubuntu/test/auto/tests/tst_qofonoconnmancontext.cpp
 @@ -61,6 +61,7 @@ private slots:
          QTRY_COMPARE(context->isValid(), true);
  
