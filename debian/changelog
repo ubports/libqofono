@@ -3,6 +3,7 @@ libqofono (0.90-0ubuntu1) UNRELEASED; urgency=medium
   * New upstream release
   * debian/control
     - Dropped recommends for ofono to a suggests
+    - Renamed QML module to follow qml-module-ofono naming (LP: #1342031)
 
  -- Ken VanDine <ken.vandine@canonical.com>  Wed, 23 Mar 2016 15:13:06 -0400
 
