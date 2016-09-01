@@ -1,6 +1,8 @@
 libqofono (0.90-0ubuntu1) UNRELEASED; urgency=medium
 
   * New upstream release
+  * debian/control
+    - Dropped recommends for ofono to a suggests
 
  -- Ken VanDine <ken.vandine@canonical.com>  Wed, 23 Mar 2016 15:13:06 -0400
 
