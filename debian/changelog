@@ -1,11 +1,11 @@
-libqofono (0.90-0ubuntu1) UNRELEASED; urgency=medium
+libqofono (0.90+16.10.20160901-0ubuntu1) yakkety; urgency=medium
 
   * New upstream release
   * debian/control
     - Dropped recommends for ofono to a suggests
     - Renamed QML module to follow qml-module-ofono naming (LP: #1342031)
 
- -- Ken VanDine <ken.vandine@canonical.com>  Wed, 23 Mar 2016 15:13:06 -0400
+ -- Ken VanDine <ken.vandine@canonical.com>  Thu, 01 Sep 2016 14:59:50 +0000
 
 libqofono (0.82+16.04.20160127-0ubuntu1) xenial; urgency=medium
 
