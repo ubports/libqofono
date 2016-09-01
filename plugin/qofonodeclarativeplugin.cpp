@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2013-2014 Jolla Ltd.
+** Copyright (C) 2013-2015 Jolla Ltd.
 ** Contact: lorn.potter@jollamobile.com
 **
 ** GNU Lesser General Public License Usage
@@ -61,6 +61,7 @@
 #include "qofonolocationreporting.h"
 
 #include "qofononetworkoperatorlistmodel.h"
+#include "qofonosimlistmodel.h"
 
 void QOfonoDeclarativePlugin::registerTypes(const char *uri, int major, int minor)
 {
@@ -111,6 +112,7 @@ void QOfonoDeclarativePlugin::registerTypes(const char *uri, int major, int mino
     qmlRegisterType<QOfonoLocationReporting>(uri,major,minor,"OfonoLocationReporting");
 
     qmlRegisterType<QOfonoNetworkOperatorListModel>(uri,major,minor,"OfonoNetworkOperatorListModel");
+    qmlRegisterType<QOfonoSimListModel>(uri,major,minor,"OfonoSimListModel");
 }
 
 void QOfonoDeclarativePlugin::registerTypes(const char *uri)

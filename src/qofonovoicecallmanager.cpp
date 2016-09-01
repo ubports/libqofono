@@ -1,6 +1,6 @@
 /***************************************************`*************************
 **
-** Copyright (C) 2013-2015 Jolla Ltd.
+** Copyright (C) 2013-2016 Jolla Ltd.
 ** Contact: lorn.potter@jollamobile.com
 **
 ** GNU Lesser General Public License Usage
@@ -14,6 +14,7 @@
 ****************************************************************************/
 
 #include "qofonovoicecallmanager.h"
+#include "qofonoutils_p.h"
 #include "ofono_voicecallmanager_interface.h"
 
 #define SUPER QOfonoModemInterface
@@ -26,6 +27,12 @@ public:
     QString errorMessage;
 
     Private() : initialized(false) {}
+
+    static void getCalls(QOfonoVoiceCallManager *parent, OfonoVoiceCallManager* iface) {
+        connect(new QDBusPendingCallWatcher(iface->GetCalls(), iface),
+            SIGNAL(finished(QDBusPendingCallWatcher*)), parent,
+            SLOT(onGetCallsFinished(QDBusPendingCallWatcher*)));
+    }
 
     class Watcher : public QDBusPendingCallWatcher {
     public:
@@ -76,9 +83,6 @@ bool QOfonoVoiceCallManager::isValid() const
 QDBusAbstractInterface *QOfonoVoiceCallManager::createDbusInterface(const QString &path)
 {
     OfonoVoiceCallManager* iface = new OfonoVoiceCallManager("org.ofono", path, QDBusConnection::systemBus(), this);
-    connect(new QDBusPendingCallWatcher(iface->GetCalls(), iface),
-        SIGNAL(finished(QDBusPendingCallWatcher*)),
-        SLOT(onGetCallsFinished(QDBusPendingCallWatcher*)));
     connect(iface,
         SIGNAL(CallAdded(QDBusObjectPath,QVariantMap)),
         SLOT(onCallAdded(QDBusObjectPath,QVariantMap)));
@@ -87,6 +91,7 @@ QDBusAbstractInterface *QOfonoVoiceCallManager::createDbusInterface(const QStrin
         SLOT(onCallRemoved(QDBusObjectPath)));
     connect(iface, SIGNAL(BarringActive(QString)), SIGNAL(barringActive(QString)));
     connect(iface, SIGNAL(Forwarded(QString)), SIGNAL(forwarded(QString)));
+    Private::getCalls(this, iface);
     return iface;
 }
 
@@ -269,15 +274,21 @@ void QOfonoVoiceCallManager::onGetCallsFinished(QDBusPendingCallWatcher *watch)
     watch->deleteLater();
     QDBusPendingReply<ObjectPathPropertiesList> reply(*watch);
     if (reply.isError()) {
-        qDebug() << reply.error();
-        Q_EMIT reportError(reply.error().message());
+        if (qofono::isTimeout(reply.error())) {
+            // Retry GetCalls call if it times out
+            qDebug() << "Retrying GetCalls...";
+            Private::getCalls(this, (OfonoVoiceCallManager*)dbusInterface());
+        } else {
+            qDebug() << reply.error();
+            Q_EMIT reportError(reply.error().message());
+        }
     } else {
+        ValidTracker valid(this);
         ObjectPathPropertiesList list = reply.value();
         privateData()->initialized = true;
         for (int i=0; i<list.count(); i++) {
             addCall(list[i].path.path());
         }
-        if (isValid()) validChanged(true);
     }
 }
 

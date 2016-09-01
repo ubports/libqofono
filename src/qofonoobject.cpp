@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014-2015 Jolla Ltd.
+** Copyright (C) 2014-2016 Jolla Ltd.
 ** Contact: slava.monich@jolla.com
 **
 ** GNU Lesser General Public License Usage
@@ -23,14 +23,18 @@ public:
     QDBusAbstractInterface *interface;
     bool initialized;
     bool fixedPath;
+    bool validMark;
+    int validMarkCount;
     QString objectPath;
     QVariantMap properties;
 
     Private(QOfonoObject::ExtData *data) : ext(data),
-        interface(NULL), initialized(false), fixedPath(false) {}
+        interface(NULL), initialized(false), fixedPath(false),
+        validMark(false), validMarkCount(0) {}
     ~Private() { delete ext; }
 
     QDBusPendingCall setProperty(const QString &key, const QVariant &value);
+    void getProperties(QOfonoObject *obj);
 
     class SetPropertyWatcher : public QDBusPendingCallWatcher {
     public:
@@ -45,6 +49,23 @@ QOfonoObject::ExtData::~ExtData()
 {
 }
 
+QOfonoObject::ValidTracker::ValidTracker(QOfonoObject* obj) : object(obj)
+{
+    if (!(object->d_ptr->validMarkCount++)) {
+        object->d_ptr->validMark = obj->isValid();
+    }
+}
+
+QOfonoObject::ValidTracker::~ValidTracker()
+{
+    if (!(--object->d_ptr->validMarkCount)) {
+        const bool valid = object->isValid();
+        if (object->d_ptr->validMark != valid) {
+            Q_EMIT object->validChanged(valid);
+        }
+    }
+}
+
 QDBusPendingCall QOfonoObject::Private::setProperty(const QString &key, const QVariant &value)
 {
     // Caller checks interface for NULL
@@ -53,6 +74,13 @@ QDBusPendingCall QOfonoObject::Private::setProperty(const QString &key, const QV
     return interface->asyncCallWithArgumentList("SetProperty", args);
 }
 
+void QOfonoObject::Private::getProperties(QOfonoObject *obj)
+{
+    QObject::connect(new QDBusPendingCallWatcher(
+        interface->asyncCall("GetProperties"), interface),
+        SIGNAL(finished(QDBusPendingCallWatcher*)), obj,
+        SLOT(onGetPropertiesFinished(QDBusPendingCallWatcher*)));
+}
 
 QOfonoObject::QOfonoObject(QObject *parent) :
     QObject(parent),
@@ -127,7 +155,7 @@ void QOfonoObject::resetDbusInterface(const QVariantMap *properties)
 
 void QOfonoObject::setDbusInterface(QDBusAbstractInterface *iface, const QVariantMap *properties)
 {
-    bool wasValid = isValid();
+    ValidTracker valid(this);
     d_ptr->initialized = false;
     if (d_ptr->interface) {
         delete d_ptr->interface;
@@ -146,18 +174,11 @@ void QOfonoObject::setDbusInterface(QDBusAbstractInterface *iface, const QVarian
             }
         } else {
             d_ptr->initialized = false;
-            connect(new QDBusPendingCallWatcher(
-                iface->asyncCall("GetProperties"), iface),
-                SIGNAL(finished(QDBusPendingCallWatcher*)),
-                SLOT(onGetPropertiesFinished(QDBusPendingCallWatcher*)));
+            d_ptr->getProperties(this);
         }
         connect(iface,
             SIGNAL(PropertyChanged(QString,QDBusVariant)),
             SLOT(onPropertyChanged(QString,QDBusVariant)));
-    }
-    bool valid = isValid();
-    if (valid != wasValid) {
-        Q_EMIT validChanged(valid);
     }
 }
 
@@ -186,16 +207,20 @@ void QOfonoObject::onGetPropertiesFinished(QDBusPendingCallWatcher *watch)
 void QOfonoObject::getPropertiesFinished(const QVariantMap &properties, const QDBusError *error)
 {
     if (!error) {
+        ValidTracker valid(this);
         for (QVariantMap::ConstIterator it = properties.constBegin();
              it != properties.constEnd(); ++it) {
             updateProperty(it.key(), it.value());
         }
         d_ptr->initialized = true;
-        if (isValid()) {
-            Q_EMIT validChanged(true);
-        }
+    } else if (qofono::isTimeout(*error)) {
+        // Retry GetProperties call if it times out
+        qDebug() << "Retrying"
+                 << qPrintable(d_ptr->interface->interface() + ".GetProperties")
+                 << d_ptr->interface->path();
+        d_ptr->getProperties(this);
     } else {
-        qDebug() << *error;
+        qWarning() << *error;
         Q_EMIT reportError(error->message());
     }
 }

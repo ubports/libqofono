@@ -1,11 +1,11 @@
 Name:       libqofono-qt5
 
 Summary:    A library of Qt 5 bindings for ofono
-Version:    0.82
+Version:    0.90
 Release:    1
 Group:      System/Libraries
 License:    LGPLv2.1
-URL:        https://github.com/nemomobile/libqofono
+URL:        https://git.merproject.org/mer-core/libqofono
 Source0:    %{name}-%{version}.tar.bz2
 Requires:   qt5-qtcore
 Requires:   mobile-broadband-provider-info
