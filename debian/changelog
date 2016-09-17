@@ -1,3 +1,10 @@
+libqofono (0.90+16.10.20160917-0ubuntu1) yakkety; urgency=medium
+
+  [ Florian Boucault ]
+  * Crossbuild fixes
+
+ -- Robert Bruce Park <robert.park@canonical.com>  Sat, 17 Sep 2016 15:23:54 +0000
+
 libqofono (0.90+16.10.20160901-0ubuntu1) yakkety; urgency=medium
 
   * New upstream release
