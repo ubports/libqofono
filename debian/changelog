@@ -1,3 +1,9 @@
+libqofono (0.91+ubports) xenial; urgency=medium
+
+  * Imported to UBports
+
+ -- UBports auto importer <infra@ubports.com>  Sun, 07 Jan 2018 23:47:58 +0100
+
 libqofono (0.90+16.10.20160917-0ubuntu1) yakkety; urgency=medium
 
   [ Florian Boucault ]
