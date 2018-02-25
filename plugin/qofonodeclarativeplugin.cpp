@@ -34,6 +34,7 @@
 #include "qofonomessage.h"
 #include "qofonomessagemanager.h"
 #include "qofonomessagewaiting.h"
+#include "qofonomtksettings.h"
 
 #include "qofonosimmanager.h"
 
@@ -87,6 +88,7 @@ void QOfonoDeclarativePlugin::registerTypes(const char *uri, int major, int mino
     qmlRegisterType<QOfonoMessage>(uri,major,minor,"OfonoMessage");
     qmlRegisterType<QOfonoMessageManager>(uri,major,minor,"OfonoMessageManager");
     qmlRegisterType<QOfonoMessageWaiting>(uri,major,minor,"OfonoMessageWaiting");
+    qmlRegisterType<QOfonoMtkSettings>(uri,0,2,"OfonoMtkSettings");
 
     qmlRegisterType<QOfonoSimManager>(uri,major,minor,"OfonoSimManager");
 

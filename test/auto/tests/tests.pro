@@ -11,6 +11,7 @@ SUBDIRS += \
     tst_qofonosimmanager.pro \
     tst_qofonomessagewaiting.pro \
     tst_qofonomessagemanager.pro \
+    tst_qofonomtksettings.pro \
     tst_qofonoradiosettings.pro \
     tst_qofonocallbarring.pro \
     tst_qofonocallforwarding.pro \

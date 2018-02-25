@@ -28,6 +28,7 @@ class QOFONOSHARED_EXPORT QOfonoConnectionContext : public QOfonoObject
 {
     Q_OBJECT
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
+    Q_PROPERTY(bool preferred READ preferred WRITE setPreferred NOTIFY preferredChanged)
     Q_PROPERTY(bool provisioning READ provisioning NOTIFY provisioningChanged)
     Q_PROPERTY(QString accessPointName READ accessPointName WRITE setAccessPointName NOTIFY accessPointNameChanged)
     Q_PROPERTY(QString type READ type WRITE setType NOTIFY typeChanged)
@@ -55,6 +56,9 @@ public:
     void setActive(bool);
 
     bool provisioning() const;
+
+    bool preferred() const;
+    void setPreferred(bool);
 
     QString accessPointName() const;
     void setAccessPointName(const QString &);
@@ -104,6 +108,7 @@ public:
 Q_SIGNALS:
     void disconnectRequested();
     void activeChanged(bool active);
+    void preferredChanged(bool preferred);
     void provisioningChanged(bool provisioning);
     void accessPointNameChanged(const QString &apn);
     void nameChanged(const QString &name);

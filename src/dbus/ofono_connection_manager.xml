@@ -18,6 +18,7 @@
 			<arg type="o" direction="in"/>
 		</method>
 		<method name="DeactivateAll"/>
+                <method name="ResetContexts"/>
 		<method name="GetContexts">
 			<arg type="a(oa{sv})" direction="out"/>
 			<annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="ObjectPathPropertiesList"/>

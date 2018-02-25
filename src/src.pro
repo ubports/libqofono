@@ -48,6 +48,7 @@ XML_FILES += \
     dbus/ofono_message_manager.xml \
     dbus/ofono_messagewaiting.xml \
     dbus/ofono_modem.xml \
+    dbus/ofono_mtk_settings.xml \
     dbus/ofono_network_operator.xml \
     dbus/ofono_network_registration.xml \
     dbus/ofono_phonebook.xml \
@@ -93,6 +94,7 @@ SOURCES += \
     qofonomessage.cpp \
     qofonomessagemanager.cpp \
     qofonomessagewaiting.cpp \
+    qofonomtksettings.cpp \
     qofonosimmanager.cpp \
     qofonosimwatcher.cpp \
     qofonophonebook.cpp \
@@ -133,6 +135,7 @@ PUBLIC_HEADERS += \
     qofonomessage.h \
     qofonomessagemanager.h \
     qofonomessagewaiting.h \
+    qofonomtksettings.h \
     qofonosimmanager.h \
     qofonosimwatcher.h \
     qofonophonebook.h \
@@ -260,6 +263,11 @@ DBUS_INTERFACES += ofono_modem
 ofono_modem.files = dbus/ofono_modem.xml
 ofono_modem.header_flags = -N -c OfonoModem
 ofono_modem.source_flags = -N -c OfonoModem
+
+DBUS_INTERFACES += ofono_mtk_settings
+ofono_mtk_settings.files = dbus/ofono_mtk_settings.xml
+ofono_mtk_settings.header_flags = -N -c OfonoMtkSettings
+ofono_mtk_settings.source_flags = -N -c OfonoMtkSettings
 
 DBUS_INTERFACES += ofono_network_operator
 ofono_network_operator.files = dbus/ofono_network_operator.xml

@@ -107,8 +107,45 @@ private slots:
         QCOMPARE(rem.count(), 0);
     }
 
+    void testResetContexts()
+    {
+        Q_FOREACH (QString context, m->contexts()) {
+            m->removeContext(context);
+        }
+        QTRY_VERIFY(m->contexts().isEmpty());
+
+        QSignalSpy pow(m, SIGNAL(poweredChanged(bool)));
+        QSignalSpy add(m, SIGNAL(contextAdded(QString)));
+        QSignalSpy rem(m, SIGNAL(contextRemoved(QString)));
+
+        // Add new context.
+        m->addContext(QString("internet"));
+        QTRY_COMPARE(add.count(), 1);
+        QString path = add.takeFirst().at(0).toString();
+        QOfonoConnectionContext* contextInternet = new QOfonoConnectionContext(this);
+        contextInternet->setContextPath(path);
+
+        // We activate context to make sure connman is deactivating on reset.
+        contextInternet->setActive(true);
+        QTRY_VERIFY(contextInternet->active());
+
+        // Connman needs to be powered down before calling reset.
+        m->setPowered(false);
+        QTRY_COMPARE(pow.count(), 1);
+        QCOMPARE(pow.takeFirst().at(0).toBool(), false);
+        QCOMPARE(m->powered(), false);
+
+        m->resetContexts();
+        QTRY_COMPARE(rem.count(), 1);
+    }
+
     void cleanupTestCase()
     {
+        QSignalSpy pow(m, SIGNAL(poweredChanged(bool)));
+        m->setPowered(true);
+        QTRY_COMPARE(pow.count(), 1);
+        QCOMPARE(pow.takeFirst().at(0).toBool(), true);
+        QCOMPARE(m->powered(), true);
     }
 
 private:

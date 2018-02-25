@@ -143,6 +143,21 @@ void QOfonoConnectionManager::removeContext(const QString &path)
     }
 }
 
+void QOfonoConnectionManager::resetContexts()
+{
+    OfonoConnectionManager *iface = (OfonoConnectionManager*)dbusInterface();
+    if (iface) {
+        QDBusPendingReply<> deactivate = iface->DeactivateAll();
+        deactivate.waitForFinished();
+        QDBusPendingReply<> reset = iface->ResetContexts();
+        reset.waitForFinished();
+        if (reset.isError()) {
+            qDebug() << reset.error();
+            Q_EMIT reportError(reset.error().message());
+        }
+    }
+}
+
 bool QOfonoConnectionManager::attached() const
 {
     return getBool("Attached");

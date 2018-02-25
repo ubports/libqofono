@@ -61,6 +61,7 @@ private slots:
         QTRY_COMPARE(context->isValid(), true);
 
         QSignalSpy active(context, SIGNAL(activeChanged(bool)));
+        QSignalSpy preferred(context, SIGNAL(preferredChanged(bool)));
         QSignalSpy apn(context,SIGNAL(accessPointNameChanged(QString)));
         QSignalSpy name(context, SIGNAL(nameChanged(QString)));
         QSignalSpy type (context, SIGNAL(typeChanged(QString)));
@@ -93,6 +94,10 @@ private slots:
         QTRY_COMPARE(active.count(), 1);
         QCOMPARE(active.takeFirst().at(0).toBool(), true);
 
+        context->setPreferred(true);
+        QTRY_COMPARE(preferred.count(), 1);
+        QCOMPARE(preferred.takeFirst().at(0).toBool(), true);
+
         QTRY_COMPARE(sett6.count(), 1);
         QCOMPARE(sett6.takeFirst().at(0).toMap()["Interface"].value<QString>().left(5),
             QString("dummy")); // "dummy" plus number
@@ -109,10 +114,15 @@ private slots:
         QCOMPARE(sett.count(), 0);
         QCOMPARE(proto.count(), 0);
         QCOMPARE(active.count(), 0);
+        QCOMPARE(preferred.count(), 0);
 
         context->setActive(false);
         QTRY_COMPARE(active.count(), 1);
         QCOMPARE(active.takeFirst().at(0).toBool(), false);
+
+        context->setPreferred(false);
+        QTRY_COMPARE(preferred.count(), 1);
+        QCOMPARE(preferred.takeFirst().at(0).toBool(), false);
 
         delete context;
 
