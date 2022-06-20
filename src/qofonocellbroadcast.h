@@ -29,7 +29,7 @@ class QOFONOSHARED_EXPORT QOfonoCellBroadcast : public QOfonoObject
     Q_OBJECT
     Q_PROPERTY(QString modemPath READ modemPath WRITE setModemPath NOTIFY modemPathChanged)
     Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
-    Q_PROPERTY(QString topics READ topics NOTIFY topicsChanged)
+    Q_PROPERTY(QString topics READ topics WRITE setTopics NOTIFY topicsChanged)
 
 public:
     explicit QOfonoCellBroadcast(QObject *parent = 0);
